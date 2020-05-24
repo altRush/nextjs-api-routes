@@ -1,20 +1,21 @@
 import useSwr from 'swr'
 import Link from 'next/link'
+import axios from 'axios'
 
-const fetcher = (url) => fetch(url).then((res) => res.json())
+const fetcher = url => axios(url).then(res => res.data)
 
 export default function Index() {
-  const { data, error } = useSwr('/api/users', fetcher)
+  const { data, error } = useSwr('/api/posts', fetcher)
 
-  if (error) return <div>Failed to load users</div>
+  if (error) return <div>Failed to load posts</div>
   if (!data) return <div>Loading...</div>
 
   return (
     <ul>
-      {data.map((user) => (
-        <li key={user.id}>
-          <Link href="/user/[id]" as={`/user/${user.id}`}>
-            <a>{`User ${user.id}`}</a>
+      {data.map(post => (
+        <li key={post.id}>
+          <Link href="/user/[id]" as={`/user/${post.id}`}>
+            <a>{`Post ${post.id} : ${post.content}`}</a>
           </Link>
         </li>
       ))}
